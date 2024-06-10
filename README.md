@@ -13,3 +13,6 @@ serial assistant written in python and qml.
 ## ResColor
 
 ![](./ResColor/截屏.jpg)
+
+## SciFilter
+filter designer based on scipy.
