@@ -17,28 +17,64 @@
    <item>
     <widget class="QGroupBox" name="grpPath">
      <property name="title">
-      <string>指定要操作的目录</string>
+      <string>指定文件所在目录</string>
      </property>
-     <layout class="QHBoxLayout" name="hLayout">
-      <item>
+     <layout class="QGridLayout" name="gLayout">
+      <item row="0" column="0">
        <widget class="QLabel" name="lblPath">
         <property name="text">
          <string>目录路径：</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="linPath">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="3">
        <widget class="QToolButton" name="btnPath">
         <property name="text">
          <string>...</string>
         </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblType">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>文件类型：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cmbType">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>180</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>*.*</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>*.c *.h *.s</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -119,7 +155,7 @@
           <string>区分大小写</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -202,7 +238,7 @@
           <string>区分大小写</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -223,7 +259,7 @@
      </widget>
      <widget class="QWidget" name="tabCode">
       <attribute name="title">
-       <string>更改文件编码</string>
+       <string>变换文件编码</string>
       </attribute>
       <layout class="QHBoxLayout" name="hLayoutC">
        <item>
@@ -243,7 +279,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>133</width>
            <height>16777215</height>
           </size>
          </property>
@@ -276,7 +312,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>133</width>
            <height>16777215</height>
           </size>
          </property>

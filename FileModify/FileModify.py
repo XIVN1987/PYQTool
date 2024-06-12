@@ -17,10 +17,14 @@ class FileModify(QWidget):
 
     @pyqtSlot()
     def on_btnPath_clicked(self):
-        dir = QFileDialog.getExistingDirectory(caption='指定要操作的目录')
+        dir = QFileDialog.getExistingDirectory(caption='指定文件所在目录', directory=self.linPath.text())
         if dir != '':
             self.linPath.setText(dir)
-    
+
+    @pyqtSlot(int)
+    def on_tabOper_currentChanged(self, index):
+        self.cmbType.setEnabled(index != 0)
+
     @pyqtSlot()
     def on_btnExecN_clicked(self):
         path = self.linPath.text()
@@ -59,6 +63,10 @@ class FileModify(QWidget):
     def replaceString(self, path, srcT, dstT, caseSensitive):
         for root, dirs, files in os.walk(path):
             for name in files:
+                _, ext = os.path.splitext(name)
+                filter = self.cmbType.currentText()
+                if filter != '*.*' and filter.find(ext) < 1: continue   # str.find('') == 0
+
                 fullpath = os.path.join(root, name)
                 try:
                     text = open(fullpath, 'r', encoding='gbk').read()
@@ -68,6 +76,7 @@ class FileModify(QWidget):
                         text = open(fullpath, 'r', encoding='utf-8').read()
                         encoding = 'utf-8'
                     except:
+                        self.txtInfo.append(f'{fullpath} read fail\n')
                         continue
 
                 if caseSensitive:
@@ -95,14 +104,23 @@ class FileModify(QWidget):
     def CodingConvert(self, path, srcC, dstC):
         for root, dirs, files in os.walk(path):
             for name in files:
+                _, ext = os.path.splitext(name)
+                filter = self.cmbType.currentText()
+                if filter != '*.*' and filter.find(ext) < 1: continue
+                
                 fullpath = os.path.join(root, name)
                 try:
-                    text = open(fullpath, 'r', encoding=srcC).read()
-                    open(fullpath, 'w', encoding=dstC).write(text)
+                    bstr = open(fullpath, 'rb').read()
+                    newbstr = bstr.decode(srcC).encode(dstC)
+                except:
+                    self.txtInfo.append(f'{fullpath} read fail\n')
+                    continue
+
+                if newbstr != bstr:
+                    os.chmod(fullpath, stat.S_IWRITE)
+                    open(fullpath, 'wb').write(newbstr)
 
                     self.txtInfo.append(f'{fullpath} encoding changed\n')
-                except:
-                    pass
 
 
 if __name__ == "__main__":
