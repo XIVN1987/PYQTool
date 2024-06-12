@@ -16,26 +16,9 @@ class SciFilter(QWidget):
         
         uic.loadUi('SciFilter.ui', self)
 
-        self.bgrpArch = QtWidgets.QButtonGroup(self)
-        self.bgrpArch.addButton(self.chkFIR)
-        self.bgrpArch.addButton(self.chkIIR)
-        self.bgrpArch.buttonToggled.connect(self.on_bgrpArch_buttonToggled)
-
-        self.bgrpType = QtWidgets.QButtonGroup(self)
-        self.bgrpType.addButton(self.chkLP)
-        self.bgrpType.addButton(self.chkHP)
-        self.bgrpType.addButton(self.chkBP)
-        self.bgrpType.addButton(self.chkBS)
-        self.bgrpType.buttonToggled.connect(self.on_bgrpType_buttonToggled)
         self.on_bgrpType_buttonToggled(self.chkLP, True)
 
-        self.bgrpModl = QtWidgets.QButtonGroup(self)
-        self.bgrpModl.addButton(self.chkCheb)
-        self.bgrpModl.addButton(self.chkBess)
-        self.bgrpModl.addButton(self.chkButt)
-        self.bgrpModl.addButton(self.chkElli)
-        self.bgrpModl.buttonToggled.connect(self.on_bgrpModl_buttonToggled)
-
+    @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpArch_buttonToggled(self, button, checked):
         if not checked: return
 
@@ -47,6 +30,7 @@ class SciFilter(QWidget):
             self.lblNtap.setEnabled(False)
             self.linNtap.setEnabled(False)
     
+    @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpType_buttonToggled(self, button, checked):
         if not checked: return
 
@@ -60,6 +44,7 @@ class SciFilter(QWidget):
             self.linHlimit.setEnabled(True)
             self.lblFstop.setText('下限频率：')
 
+    @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpModl_buttonToggled(self, button, checked):
         if not checked: return
 
