@@ -30,9 +30,10 @@ class FileModify(QWidget):
         path = self.linPath.text()
         srcN = self.linSrcN.text()
         dstN = self.linDstN.text()
+        caseSensitive = self.chkCaseN.isChecked()
         
         self.txtInfo.clear()
-        self.renameFileDir(path, srcN, dstN, self.chkCaseN.isChecked())
+        self.renameFileDir(path, srcN, dstN, caseSensitive)
         self.txtInfo.append('Done...')
     
     #将指定路径path及其子目录下的文件名和目录名中的srcN替换成dstN
@@ -54,17 +55,18 @@ class FileModify(QWidget):
         path = self.linPath.text()
         srcT = self.linSrcT.text()
         dstT = self.linDstT.text()
+        filter = self.cmbType.currentText()
+        caseSensitive = self.chkCaseN.isChecked()
         
         self.txtInfo.clear()
-        self.replaceString(path, srcT, dstT, self.chkCaseT.isChecked())
+        self.replaceString(path, srcT, dstT, filter, caseSensitive)
         self.txtInfo.append('Done...')
 
     #将指定路径path及其子目录下的文件的内容中的srcT替换成dstT
-    def replaceString(self, path, srcT, dstT, caseSensitive):
+    def replaceString(self, path, srcT, dstT, filter, caseSensitive):
         for root, dirs, files in os.walk(path):
             for name in files:
                 _, ext = os.path.splitext(name)
-                filter = self.cmbType.currentText()
                 if filter != '*.*' and filter.find(ext) < 1: continue   # str.find('') == 0
 
                 fullpath = os.path.join(root, name)
@@ -95,17 +97,17 @@ class FileModify(QWidget):
         path = self.linPath.text()
         srcC = self.cmbSrcC.currentText()
         dstC = self.cmbDstC.currentText()
+        filter = self.cmbType.currentText()
         
         self.txtInfo.clear()
-        self.CodingConvert(path, srcC, dstC)
+        self.CodingConvert(path, srcC, dstC, filter)
         self.txtInfo.append('Done...')
 
     #将指定路径path及其子目录下的文件的内容编码由srcC转换成dstC
-    def CodingConvert(self, path, srcC, dstC):
+    def CodingConvert(self, path, srcC, dstC, filter):
         for root, dirs, files in os.walk(path):
             for name in files:
                 _, ext = os.path.splitext(name)
-                filter = self.cmbType.currentText()
                 if filter != '*.*' and filter.find(ext) < 1: continue
                 
                 fullpath = os.path.join(root, name)
