@@ -25,18 +25,19 @@ ApplicationWindow {
 			spacing: 10
 
 			Label {
-				id: lblSer
+				id: lblPort
 				text: "串口号："
 			}
 
 			ComboBox {
 				id: cmbPort
 				objectName: "cmbPort"
-				Layout.minimumWidth: 100 * 2 + 10 * 2 + lblSer.width
+				Layout.minimumWidth: 100 * 2 + 10 * 2 + lblPort.width
 				model: ports
 			}
 
 			Label {
+				id: lblBaud
 				text: "波特率："
 			}
 
@@ -60,10 +61,10 @@ ApplicationWindow {
 			}
 
 			CheckBox {
-				id: chkHexShow
-				objectName: "chkHexShow"
+				id: chkWave
+				objectName: "chkWave"
 				Layout.minimumWidth: 80
-				text: "HEX 显示"
+				text: "波形显示"
 			}
 		}
 
@@ -71,6 +72,7 @@ ApplicationWindow {
 			spacing: 10
 
 			Label {
+				id: lblData
 				text: "数据位："
 			}
 
@@ -82,17 +84,19 @@ ApplicationWindow {
 			}
 
 			Label {
+				id: lblChek
 				text: "校验位："
 			}
 
 			ComboBox {
-				id: cmbParity
-				objectName: "cmbParity"
+				id: cmbChek
+				objectName: "cmbChek"
 				Layout.minimumWidth: 100
 				model: [ "None", "Odd", "Even", "One", "Zero" ]
 			}
 
 			Label {
+				id: lblStop
 				text: "停止位："
 			}
 
@@ -115,26 +119,25 @@ ApplicationWindow {
 			}
 
 			CheckBox {
-				id: chkWavShow
-				objectName: "chkWavShow"
+				id: chkSave
+				objectName: "chkSave"
 				Layout.minimumWidth: 80
-				text: "波形显示"
+				text: "保存接收"
 			}
 		}
 
 		GridLayout {
-			rows: 3
+			rows: 4
 			columns: 3
 			rowSpacing: 10
 			columnSpacing: 10
-			Layout.topMargin: 5
 
 			TextArea {
 				id: txtSend
 				objectName: "txtSend"
 				Layout.row: 0
 				Layout.column: 0
-				Layout.rowSpan: 3
+				Layout.rowSpan: 4
 				Layout.fillWidth: true
 				Layout.maximumHeight: parent.height
 				Layout.rightMargin: 10
@@ -142,41 +145,49 @@ ApplicationWindow {
 
 			Button {
 				id: btnSend
-				objectName: 'btnSend'
 				Layout.row: 0
 				Layout.column: 1
-				Layout.rowSpan: 3
+				Layout.rowSpan: 4
 				Layout.minimumWidth: 100
 				Layout.minimumHeight: parent.height
 				text: "发送"
 				onClicked: ser.on_btnSend_clicked()
 			}
 
-			CheckBox {
-				id: chkHexSend
-				objectName: "chkHexSend"
+			ComboBox {
+				id: cmbICode
+				objectName: "cmbICode"
 				Layout.row: 0
 				Layout.column: 2
 				Layout.minimumWidth: 80
-				text: "HEX 发送"
+				model: ["ASCII", "HEX", "GBK", "UTF-8"]
 			}
 
-			CheckBox {
-				id: chkTimSend
-				objectName: "chkTimSend"
+			ComboBox {
+				id: cmbOCode
+				objectName: "cmbOCode"
 				Layout.row: 1
 				Layout.column: 2
 				Layout.minimumWidth: 80
-				text: "定时发送"
+				model: ["ASCII", "HEX", "GBK", "UTF-8"]
 			}
 
-			CheckBox {
-				id: chkExtTran
-				objectName: "chkExtTran"
+			ComboBox {
+				id: cmbEnter
+				objectName: "cmbEnter"
 				Layout.row: 2
 				Layout.column: 2
 				Layout.minimumWidth: 80
-				text: "扩展收发"
+				model: ["\\r\\n", "\\n", "\\r"]
+			}
+
+			ComboBox {
+				id: cmbAuto
+				objectName: "cmbAuto"
+				Layout.row: 3
+				Layout.column: 2
+				Layout.minimumWidth: 80
+				model: [ "No Auto", "0.1s", "0.2s", "0.5s", "1s", "2s", "5s" ]
 			}
 		}
 	}

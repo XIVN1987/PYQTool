@@ -17,23 +17,25 @@ class QmlSer(QObject):
         self.win = parent
         self.ctx = context
 
+        self.txtMain = self.win.findChild(QObject, 'txtMain')
+
         self.cmbPort = self.win.findChild(QObject, 'cmbPort')
         self.cmbBaud = self.win.findChild(QObject, 'cmbBaud')
         self.cmbData = self.win.findChild(QObject, 'cmbData')
-        self.cmbChek = self.win.findChild(QObject, 'cmbParity')
+        self.cmbChek = self.win.findChild(QObject, 'cmbChek')
         self.cmbStop = self.win.findChild(QObject, 'cmbStop')
 
-        self.txtMain = self.win.findChild(QObject, 'txtMain')
+        self.btnOpen = self.win.findChild(QObject, 'btnOpen')
+
+        self.chkWave = self.win.findChild(QObject, 'chkWave')
+        self.chkSave = self.win.findChild(QObject, 'chkSave')
+
         self.txtSend = self.win.findChild(QObject, 'txtSend')
 
-        self.btnOpen = self.win.findChild(QObject, 'btnOpen')
-        self.btnSend = self.win.findChild(QObject, 'btnSend')
-
-        self.chkHexShow = self.win.findChild(QObject, 'chkHexShow')
-        self.chkWavShow = self.win.findChild(QObject, 'chkWavShow')
-        self.chkHexSend = self.win.findChild(QObject, 'chkHexSend')
-        self.chkTimSend = self.win.findChild(QObject, 'chkTimSend')
-        self.chkExtTran = self.win.findChild(QObject, 'chkExtTran')
+        self.cmbICode= self.win.findChild(QObject, 'cmbICode')
+        self.cmbOCode= self.win.findChild(QObject, 'cmbOCode')
+        self.cmbEnter= self.win.findChild(QObject, 'cmbEnter')
+        self.cmbAuto = self.win.findChild(QObject, 'cmbAuto')
 
         self.initSetting()
 
@@ -80,7 +82,7 @@ class QmlSer(QObject):
     def on_btnSend_clicked(self):
         if self.ser.isOpen():
             text = self.txtSend.property('text')
-            if self.chkHexSend.property('checkedState'):
+            if self.cmbOCode.property('currentText') == 'HEX':
                 bytes = ' '.join([chr(int(c, 16)) for c in text.split()]).encode('latin')
             else:
                 bytes = text.encode('latin')
