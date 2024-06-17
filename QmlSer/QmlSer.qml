@@ -5,7 +5,7 @@ import QtQuick.Controls 1.4
 ApplicationWindow {
 	visible: true
 	width: 720
-	height: 560
+	height: 580
 	title: "串口助手"
 
 	ColumnLayout {
@@ -129,7 +129,7 @@ ApplicationWindow {
 		GridLayout {
 			rows: 4
 			columns: 3
-			rowSpacing: 10
+			rowSpacing: 6
 			columnSpacing: 10
 
 			TextArea {

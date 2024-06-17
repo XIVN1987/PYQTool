@@ -17,6 +17,8 @@ serial assistant written in python and qml.
 ## SciFilter
 filter designer based on scipy.
 
+![](./SciFilter/截屏.jpg)
+
 ## FileModify
 
 ![](./FileModify/截屏.jpg)
