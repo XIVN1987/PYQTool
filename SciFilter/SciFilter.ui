@@ -6,36 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>560</height>
+    <width>900</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SciFilter</string>
   </property>
   <layout class="QHBoxLayout" name="hLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="vLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="rightMargin">
-      <number>10</number>
+     <property name="spacing">
+      <number>9</number>
      </property>
      <item>
       <widget class="QGroupBox" name="grpArch">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="title">
         <string>结构</string>
        </property>
@@ -68,18 +56,6 @@
      </item>
      <item>
       <widget class="QGroupBox" name="grpType">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="title">
         <string>类型</string>
        </property>
@@ -88,19 +64,6 @@
          <widget class="QRadioButton" name="chkLP">
           <property name="text">
            <string>Low Pass</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-          <attribute name="buttonGroup">
-           <string notr="true">bgrpType</string>
-          </attribute>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QRadioButton" name="chkBP">
-          <property name="text">
-           <string>Band Pass</string>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpType</string>
@@ -112,12 +75,25 @@
           <property name="text">
            <string>High Pass</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpType</string>
           </attribute>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="chkBP">
+          <property name="text">
+           <string>Band Pass</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">bgrpType</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="1" column="1">
          <widget class="QRadioButton" name="chkBS">
           <property name="text">
            <string>Band Stop</string>
@@ -131,63 +107,71 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="grpModl">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
-       </property>
+      <widget class="QGroupBox" name="grpWin">
        <property name="title">
-        <string>模型</string>
+        <string>加窗</string>
        </property>
-       <layout class="QGridLayout" name="gLayoutModl">
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="chkButt">
-          <property name="text">
-           <string>Butterworth</string>
-          </property>
-          <attribute name="buttonGroup">
-           <string notr="true">bgrpModl</string>
-          </attribute>
-         </widget>
-        </item>
+       <layout class="QGridLayout" name="gLayoutWin">
         <item row="0" column="0">
-         <widget class="QRadioButton" name="chkCheb">
+         <widget class="QRadioButton" name="chkWrect">
           <property name="text">
-           <string>Chebyshev</string>
+           <string>Rectangle</string>
           </property>
           <property name="checked">
            <bool>true</bool>
           </property>
           <attribute name="buttonGroup">
-           <string notr="true">bgrpModl</string>
+           <string notr="true">bgrpWin</string>
           </attribute>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="chkBess">
+         <widget class="QRadioButton" name="chkWhann">
           <property name="text">
-           <string>Bessel</string>
+           <string>Hann</string>
           </property>
           <attribute name="buttonGroup">
-           <string notr="true">bgrpModl</string>
+           <string notr="true">bgrpWin</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="chkWcheb">
+          <property name="text">
+           <string>Chebyshev</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">bgrpWin</string>
           </attribute>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QRadioButton" name="chkElli">
+         <widget class="QRadioButton" name="chkWbess">
+          <property name="text">
+           <string>Bessel</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">bgrpWin</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="chkWbutt">
+          <property name="text">
+           <string>Butterworth</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">bgrpWin</string>
+          </attribute>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QRadioButton" name="chkWelli">
           <property name="text">
            <string>Elliptic</string>
           </property>
           <attribute name="buttonGroup">
-           <string notr="true">bgrpModl</string>
+           <string notr="true">bgrpWin</string>
           </attribute>
          </widget>
         </item>
@@ -196,24 +180,15 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="hLayout1">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
        <item>
-        <widget class="QLabel" name="lblFsample">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QLabel" name="lblFsamp">
          <property name="text">
           <string>采样频率：</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="linFsample">
+        <widget class="QLineEdit" name="linFsamp">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -221,7 +196,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>2500Hz</string>
+          <string>1000Hz</string>
          </property>
         </widget>
        </item>
@@ -231,12 +206,6 @@
       <layout class="QHBoxLayout" name="hLayout2">
        <item>
         <widget class="QLabel" name="lblFstop">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="text">
           <string>截止频率：</string>
          </property>
@@ -260,20 +229,14 @@
      <item>
       <layout class="QHBoxLayout" name="hLayout3">
        <item>
-        <widget class="QLabel" name="lblHlimit">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QLabel" name="lblFhlim">
          <property name="text">
           <string>上限频率：</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="linHlimit">
+        <widget class="QLineEdit" name="linFhlim">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -291,12 +254,6 @@
       <layout class="QHBoxLayout" name="hLayout4">
        <item>
         <widget class="QLabel" name="lblNtap">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="text">
           <string>抽头  数：</string>
          </property>
@@ -311,7 +268,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>60</string>
+          <string>31</string>
          </property>
         </widget>
        </item>
@@ -322,23 +279,8 @@
        <property name="topMargin">
         <number>20</number>
        </property>
-       <property name="bottomMargin">
-        <number>10</number>
-       </property>
        <item>
         <widget class="QPushButton" name="btnCalc">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
          <property name="text">
           <string>计算绘图</string>
          </property>
@@ -371,6 +313,6 @@
  <buttongroups>
   <buttongroup name="bgrpArch"/>
   <buttongroup name="bgrpType"/>
-  <buttongroup name="bgrpModl"/>
+  <buttongroup name="bgrpWin"/>
  </buttongroups>
 </ui>

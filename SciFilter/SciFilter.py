@@ -8,6 +8,7 @@ from PyQt5.QtChart import QChart, QChartView, QLineSeries
 
 import numpy as np
 import scipy as sp
+from scipy import signal
 
 
 class SciFilter(QWidget):
@@ -16,7 +17,7 @@ class SciFilter(QWidget):
         
         uic.loadUi('SciFilter.ui', self)
 
-        self.on_bgrpType_buttonToggled(self.chkLP, True)
+        self.chkLP.setChecked(True)
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpArch_buttonToggled(self, button, checked):
@@ -35,26 +36,52 @@ class SciFilter(QWidget):
         if not checked: return
 
         if self.bgrpType.checkedButton() in (self.chkLP, self.chkHP):
-            self.lblHlimit.setEnabled(False)
-            self.linHlimit.setEnabled(False)
+            self.lblFhlim.setEnabled(False)
+            self.linFhlim.setEnabled(False)
             self.lblFstop.setText('截止频率：')
 
         else:
-            self.lblHlimit.setEnabled(True)
-            self.linHlimit.setEnabled(True)
+            self.lblFhlim.setEnabled(True)
+            self.linFhlim.setEnabled(True)
             self.lblFstop.setText('下限频率：')
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
-    def on_bgrpModl_buttonToggled(self, button, checked):
+    def on_bgrpWin_buttonToggled(self, button, checked):
         if not checked: return
 
-        model = self.bgrpModl.checkedButton().text()
+        model = self.bgrpWin.checkedButton().text()
 
         print(model)
 
     @pyqtSlot()
     def on_btnCalc_clicked(self):
-        pass
+        fSamp = int(self.linFsamp.text()[:-2])
+        fStop = int(self.linFstop.text()[:-2])
+        fHlim = int(self.linFhlim.text()[:-2])
+        ntaps = int(self.linNtap.text())
+
+        filter = self.bgrpType.checkedButton().text().lower().replace(' ', '')
+
+        cutoff = (fStop, fHlim) if 'band' in filter else fStop
+
+        window = {
+            'Hann':        'hann',
+            'Bessel':      '',
+            'Elliptic':    '',
+            'Rectangle':   'boxcar',
+            'Chebyshev':   'chebwin',
+            'Butterworth': ''
+        }[self.bgrpWin.checkedButton().text()]
+
+        if self.bgrpArch.checkedButton() == self.chkFIR:
+            try:
+                signal.firwin(ntaps, cutoff, fs=fSamp, window=window, pass_zero=filter)
+
+            except Exception as e:
+                print(e)
+
+        else:
+            pass
 
 
 if __name__ == "__main__":
