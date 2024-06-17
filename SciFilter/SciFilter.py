@@ -1,14 +1,15 @@
 #! python3
 import sys
-
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtChart import QChart, QChartView, QLineSeries
-
 import numpy as np
 import scipy as sp
 from scipy import signal
+
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy
+
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
 
 class SciFilter(QWidget):
@@ -18,6 +19,17 @@ class SciFilter(QWidget):
         uic.loadUi('SciFilter.ui', self)
 
         self.chkLP.setChecked(True)
+
+        self.figure = Figure()
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.canvas.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding))
+        self.hLayout.addWidget(self.canvas)
+        self.graphic.hide()   # 隐藏占位控件
+
+        self.axesFR = self.figure.add_subplot(221)  # Frequency Response
+        self.axesPR = self.figure.add_subplot(222)  # Phase Response
+        self.axesIR = self.figure.add_subplot(223)  # Impulse Response
+        self.axesSR = self.figure.add_subplot(224)  # Step Response
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpArch_buttonToggled(self, button, checked):
@@ -75,7 +87,17 @@ class SciFilter(QWidget):
 
         if self.bgrpArch.checkedButton() == self.chkFIR:
             try:
-                signal.firwin(ntaps, cutoff, fs=fSamp, window=window, pass_zero=filter)
+                b = signal.firwin(ntaps, cutoff, fs=fSamp, window=window, pass_zero=filter)
+
+                w, h = signal.freqz(b, worN=1000)
+
+                self.axesFR.clear()
+                self.axesFR.set_title("频率响应")
+                self.axesFR.set_xlabel('Frequency (Hz)')
+                self.axesFR.plot((w/np.pi)*(fSamp/2), 20*np.log10(np.abs(h)), linewidth=2)
+                self.axesFR.grid(True)
+
+                self.canvas.draw()
 
             except Exception as e:
                 print(e)
