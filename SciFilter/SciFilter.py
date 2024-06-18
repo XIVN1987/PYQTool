@@ -1,4 +1,5 @@
 #! python3
+import os
 import sys
 import numpy as np
 import scipy as sp
@@ -6,7 +7,7 @@ from scipy import signal
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QSizePolicy
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -33,6 +34,8 @@ class SciFilter(QWidget):
         self.axesIR = self.figure.add_subplot(223)  # Impulse Response
         self.axesSR = self.figure.add_subplot(224)  # Step Response
         self.figure.subplots_adjust(wspace=0.3, hspace=0.3)
+
+        self.savedir = ''
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpArch_buttonToggled(self, button, checked):
@@ -105,17 +108,17 @@ class SciFilter(QWidget):
     @pyqtSlot()
     def on_btnCalc_clicked(self):
         try:
-            fSamp = int(self.linFsamp.text()[:-2])
-            fStop = int(self.linFstop.text()[:-2])
-            fHlim = int(self.linFhlim.text()[:-2])
+            fSamp = float(self.linFsamp.text()[:-2])
+            fStop = float(self.linFstop.text()[:-2])
+            fHlim = float(self.linFhlim.text()[:-2])
             nTaps = int(self.linNtap.text())
             nOrder= int(self.linOrder.text())
 
-            Aripple = int(self.linApass.text()[:-2])
-            Aattenuation = int(self.linAstop.text()[:-2])
+            Aripple = float(self.linApass.text()[:-2])
+            Aattenuation = float(self.linAstop.text()[:-2])
 
         except Exception as e:
-            print(e)
+            QMessageBox.critical(self, 'filter parameter error', str(e))
             return
 
         filter = self.bgrpType.checkedButton().text().lower().replace(' ', '')
@@ -143,7 +146,7 @@ class SciFilter(QWidget):
                 w, h = signal.freqz(b, a, worN=1024)
 
         except Exception as e:
-            print(e)
+            QMessageBox.critical(self, 'filter calculate error', str(e))
             return
 
         self.axesFR.clear()
@@ -171,6 +174,68 @@ class SciFilter(QWidget):
         self.axesSR.grid(True)
 
         self.canvas.draw()
+
+        if self.bgrpArch.checkedButton() == self.chkFIR:
+            return b
+
+        else:
+            return b, a
+
+    @pyqtSlot()
+    def on_btnGen_clicked(self):
+        coef = self.on_btnCalc_clicked()
+        if coef is None:
+            return
+
+        dtype = self.cmbType.currentText()
+        if dtype in ('int8_t', 'int16_t'):
+            dtype = 'int16'
+
+        arch = self.bgrpArch.checkedButton().text().lower()
+
+        text = open(f'template/{arch}_{dtype}.c', 'r').read()
+
+        if arch == 'fir':
+            b, a = coef, np.ndarray(0)
+
+        else:
+            b, a = coef
+
+        if dtype == 'int16':
+            a = (a * 2**15).astype(int)
+            b = (b * 2**15).astype(int)
+
+            stra = self.data2str(a, '{:6d}, ')
+            strb = self.data2str(b, '{:6d}, ')
+
+        else:
+            stra = self.data2str(a, '{:.9f}, ')
+            strb = self.data2str(b, '{:.9f}, ')
+
+        if arch == 'fir':
+            text = text.replace('<n_tap>', f'{self.linNtap.text()}')
+            text = text.replace('<coef_b>', strb)
+
+        else:
+            text = text.replace('<n_coef>', f'{self.linOrder.text()}')
+            text = text.replace('<coef_a>', stra)
+            text = text.replace('<coef_b>', strb)
+
+        path, filter = QFileDialog.getSaveFileName(self, '将生成的代码保存至', f'{self.savedir}/{arch}.c', 'C file (*.c)')
+        if path:
+            open(path, 'w').write(text)
+
+            self.savedir = os.path.dirname(path)
+
+    def data2str(self, data, fmt):
+        str = ''
+
+        for i, x in enumerate(data):
+            str += fmt.format(x)
+            if i and i % 8 == 7:
+                str += '\n\t\t'
+
+        return str
 
 
 if __name__ == "__main__":

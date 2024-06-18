@@ -332,14 +332,65 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayoutO">
+      <layout class="QVBoxLayout" name="vLayoutC">
        <property name="topMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
         <number>20</number>
        </property>
        <item>
         <widget class="QPushButton" name="btnCalc">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
          <property name="text">
           <string>计算绘图</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="vLayoutG">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <widget class="QComboBox" name="cmbType">
+         <property name="toolTip">
+          <string>coefficient data type</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>float</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>int8_t</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>int16_t</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnGen">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>生成代码</string>
          </property>
         </widget>
        </item>
@@ -369,7 +420,7 @@
  <connections/>
  <buttongroups>
   <buttongroup name="bgrpArch"/>
-  <buttongroup name="bgrpWin"/>
   <buttongroup name="bgrpType"/>
+  <buttongroup name="bgrpWin"/>
  </buttongroups>
 </ui>
