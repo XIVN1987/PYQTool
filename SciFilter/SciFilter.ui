@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>1100</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,9 +33,6 @@
           <property name="text">
            <string>FIR</string>
           </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpArch</string>
           </attribute>
@@ -45,6 +42,9 @@
          <widget class="QRadioButton" name="chkIIR">
           <property name="text">
            <string>IIR</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpArch</string>
@@ -117,9 +117,6 @@
           <property name="text">
            <string>Rectangle</string>
           </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpWin</string>
           </attribute>
@@ -129,6 +126,9 @@
          <widget class="QRadioButton" name="chkWhann">
           <property name="text">
            <string>Hann</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">bgrpWin</string>
@@ -179,15 +179,18 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayout1">
-       <item>
+      <layout class="QGridLayout" name="gLayout">
+       <property name="verticalSpacing">
+        <number>9</number>
+       </property>
+       <item row="0" column="0">
         <widget class="QLabel" name="lblFsamp">
          <property name="text">
           <string>采样频率：</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
         <widget class="QLineEdit" name="linFsamp">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -200,18 +203,14 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="hLayout2">
-       <item>
+       <item row="1" column="0">
         <widget class="QLabel" name="lblFstop">
          <property name="text">
           <string>截止频率：</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="1" column="1">
         <widget class="QLineEdit" name="linFstop">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -224,18 +223,14 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="hLayout3">
-       <item>
+       <item row="2" column="0">
         <widget class="QLabel" name="lblFhlim">
          <property name="text">
           <string>上限频率：</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="2" column="1">
         <widget class="QLineEdit" name="linFhlim">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -248,18 +243,60 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="hLayout4">
-       <item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lblApass">
+         <property name="text">
+          <string>通带纹波：</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="linApass">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>maximum ripple in the passband</string>
+         </property>
+         <property name="text">
+          <string>1dB</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lblAstop">
+         <property name="text">
+          <string>阻带衰减：</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="linAstop">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>minimum attenuation in the stopband</string>
+         </property>
+         <property name="text">
+          <string>60dB</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QLabel" name="lblNtap">
          <property name="text">
           <string>抽头  数：</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="5" column="1">
         <widget class="QLineEdit" name="linNtap">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -272,10 +309,30 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="lblOrder">
+         <property name="text">
+          <string>IIR 阶数：</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="linOrder">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayout5">
+      <layout class="QHBoxLayout" name="hLayoutO">
        <property name="topMargin">
         <number>20</number>
        </property>
@@ -312,7 +369,7 @@
  <connections/>
  <buttongroups>
   <buttongroup name="bgrpArch"/>
-  <buttongroup name="bgrpType"/>
   <buttongroup name="bgrpWin"/>
+  <buttongroup name="bgrpType"/>
  </buttongroups>
 </ui>

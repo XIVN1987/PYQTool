@@ -19,6 +19,8 @@ class SciFilter(QWidget):
         uic.loadUi('SciFilter.ui', self)
 
         self.chkLP.setChecked(True)
+        self.chkFIR.setChecked(True)
+        self.chkWrect.setChecked(True)
 
         self.figure = Figure()
         self.canvas = FigureCanvasQTAgg(self.figure)
@@ -30,6 +32,7 @@ class SciFilter(QWidget):
         self.axesPR = self.figure.add_subplot(222)  # Phase Response
         self.axesIR = self.figure.add_subplot(223)  # Impulse Response
         self.axesSR = self.figure.add_subplot(224)  # Step Response
+        self.figure.subplots_adjust(wspace=0.3, hspace=0.3)
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpArch_buttonToggled(self, button, checked):
@@ -38,10 +41,32 @@ class SciFilter(QWidget):
         if self.bgrpArch.checkedButton() == self.chkFIR:
             self.lblNtap.setEnabled(True)
             self.linNtap.setEnabled(True)
+            self.lblOrder.setEnabled(False)
+            self.linOrder.setEnabled(False)
+
+            self.chkWrect.setEnabled(True)
+            self.chkWhann.setEnabled(True)
+            self.chkWcheb.setEnabled(False)
+            self.chkWbess.setEnabled(False)
+            self.chkWbutt.setEnabled(False)
+            self.chkWelli.setEnabled(False)
+
+            self.chkWrect.setChecked(True)
         
         else:
             self.lblNtap.setEnabled(False)
             self.linNtap.setEnabled(False)
+            self.lblOrder.setEnabled(True)
+            self.linOrder.setEnabled(True)
+
+            self.chkWrect.setEnabled(False)
+            self.chkWhann.setEnabled(False)
+            self.chkWcheb.setEnabled(True)
+            self.chkWbess.setEnabled(True)
+            self.chkWbutt.setEnabled(True)
+            self.chkWelli.setEnabled(True)
+
+            self.chkWcheb.setChecked(True)
     
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpType_buttonToggled(self, button, checked):
@@ -61,16 +86,37 @@ class SciFilter(QWidget):
     def on_bgrpWin_buttonToggled(self, button, checked):
         if not checked: return
 
-        model = self.bgrpWin.checkedButton().text()
+        if self.bgrpWin.checkedButton() in (self.chkWelli, ):
+            self.lblApass.setEnabled(True)
+            self.linApass.setEnabled(True)
 
-        print(model)
+        else:
+            self.lblApass.setEnabled(False)
+            self.linApass.setEnabled(False)
+
+        if self.bgrpWin.checkedButton() in (self.chkWelli, self.chkWcheb):
+            self.lblAstop.setEnabled(True)
+            self.linAstop.setEnabled(True)
+
+        else:
+            self.lblAstop.setEnabled(False)
+            self.linAstop.setEnabled(False)
 
     @pyqtSlot()
     def on_btnCalc_clicked(self):
-        fSamp = int(self.linFsamp.text()[:-2])
-        fStop = int(self.linFstop.text()[:-2])
-        fHlim = int(self.linFhlim.text()[:-2])
-        ntaps = int(self.linNtap.text())
+        try:
+            fSamp = int(self.linFsamp.text()[:-2])
+            fStop = int(self.linFstop.text()[:-2])
+            fHlim = int(self.linFhlim.text()[:-2])
+            nTaps = int(self.linNtap.text())
+            nOrder= int(self.linOrder.text())
+
+            Aripple = int(self.linApass.text()[:-2])
+            Aattenuation = int(self.linAstop.text()[:-2])
+
+        except Exception as e:
+            print(e)
+            return
 
         filter = self.bgrpType.checkedButton().text().lower().replace(' ', '')
 
@@ -78,32 +124,53 @@ class SciFilter(QWidget):
 
         window = {
             'Hann':        'hann',
-            'Bessel':      '',
-            'Elliptic':    '',
+            'Bessel':      'bessel',
+            'Elliptic':    'ellip',
             'Rectangle':   'boxcar',
-            'Chebyshev':   'chebwin',
-            'Butterworth': ''
+            'Chebyshev':   'cheby2',
+            'Butterworth': 'butter'
         }[self.bgrpWin.checkedButton().text()]
 
-        if self.bgrpArch.checkedButton() == self.chkFIR:
-            try:
-                b = signal.firwin(ntaps, cutoff, fs=fSamp, window=window, pass_zero=filter)
+        try:
+            if self.bgrpArch.checkedButton() == self.chkFIR:
+                b = signal.firwin(nTaps, cutoff, fs=fSamp, pass_zero=filter, window=window)
 
-                w, h = signal.freqz(b, worN=1000)
+                w, h = signal.freqz(b, worN=1024)
 
-                self.axesFR.clear()
-                self.axesFR.set_title("频率响应")
-                self.axesFR.set_xlabel('Frequency (Hz)')
-                self.axesFR.plot((w/np.pi)*(fSamp/2), 20*np.log10(np.abs(h)), linewidth=2)
-                self.axesFR.grid(True)
+            else:
+                b, a = signal.iirfilter(nOrder, cutoff, fs=fSamp, btype=filter, ftype=window, rp=Aripple, rs=Aattenuation)
+                
+                w, h = signal.freqz(b, a, worN=1024)
 
-                self.canvas.draw()
+        except Exception as e:
+            print(e)
+            return
 
-            except Exception as e:
-                print(e)
+        self.axesFR.clear()
+        self.axesFR.set_title('Frequency Response')
+        self.axesFR.set_xlabel('Frequency [Hz]')
+        self.axesFR.set_ylabel('Amplitude [dB]')
+        self.axesFR.plot((w/np.pi)*(fSamp/2), 20*np.log10(np.abs(h)))
+        self.axesFR.grid(True)
 
-        else:
-            pass
+        self.axesPR.clear()
+        self.axesPR.set_title('Phase Response')
+        self.axesPR.set_xlabel('Frequency [Hz]')
+        self.axesPR.set_ylabel('Angle [radian]')
+        self.axesPR.plot((w/np.pi)*(fSamp/2), np.angle(h))
+        self.axesPR.grid(True)
+
+        self.axesIR.clear()
+        self.axesIR.set_title('Impulse Response')
+        self.axesIR.plot(b)
+        self.axesIR.grid(True)
+
+        self.axesSR.clear()
+        self.axesSR.set_title('Step Response')
+        self.axesSR.plot(np.cumsum(b))  # 阶跃响应是冲激响应的积分
+        self.axesSR.grid(True)
+
+        self.canvas.draw()
 
 
 if __name__ == "__main__":
