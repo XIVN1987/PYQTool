@@ -221,8 +221,8 @@ class SciFilter(QWidget):
             strb = self.data2str(b, '{:6d}, ')
 
         else:
-            stra = self.data2str(a, '{:.9f}, ')
-            strb = self.data2str(b, '{:.9f}, ')
+            stra = self.data2str(a, '{:.16f}, ')
+            strb = self.data2str(b, '{:.16f}, ')
 
         if arch == 'fir':
             text = text.replace('<n_tap>', f'{self.linNtap.text()}')
