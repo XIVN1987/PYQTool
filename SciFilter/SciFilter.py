@@ -140,10 +140,22 @@ class SciFilter(QWidget):
 
                 w, h = signal.freqz(b, worN=1024)
 
+                ir = b
+
+                sr = np.cumsum(b)           # 阶跃响应是冲激响应的积分
+
             else:
                 b, a = signal.iirfilter(nOrder, cutoff, fs=fSamp, btype=filter, ftype=window, rp=Aripple, rs=Aattenuation)
                 
                 w, h = signal.freqz(b, a, worN=1024)
+
+                iir = signal.dlti(b, a)     # discrete-time linear time invariant system
+
+                t, ir = signal.dimpulse(iir, n=31)
+                t, ir = t, np.squeeze(ir)
+
+                t, sr = signal.dstep(iir, n=31)
+                t, sr = t, np.squeeze(sr)
 
         except Exception as e:
             QMessageBox.critical(self, 'filter calculate error', str(e))
@@ -165,12 +177,12 @@ class SciFilter(QWidget):
 
         self.axesIR.clear()
         self.axesIR.set_title('Impulse Response')
-        self.axesIR.plot(b)
+        self.axesIR.plot(ir)
         self.axesIR.grid(True)
 
         self.axesSR.clear()
         self.axesSR.set_title('Step Response')
-        self.axesSR.plot(np.cumsum(b))  # 阶跃响应是冲激响应的积分
+        self.axesSR.plot(sr)
         self.axesSR.grid(True)
 
         self.canvas.draw()
