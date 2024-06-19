@@ -1,10 +1,12 @@
 #include <stdint.h>
 
-#define Ntap  <n_tap>
+#define Ntap   <n_tap>
+
+#define Ngain  <n_gain>
 
 int16_t fir(int16_t NewSample)
 {
-	int16_t coef[Ntap] = { 
+	int16_t coef[Ntap] = {
 		<coef_b>
 	};
 
@@ -20,5 +22,5 @@ int16_t fir(int16_t NewSample)
 	for(int i = 0; i < Ntap; i++)
 		y += coef[i] * x[i];
 	
-	return y >> 15;
+	return y / Ngain;
 }

@@ -4,7 +4,7 @@
 
 float fir(float NewSample)
 {
-	float coef[Ntap] = { 
+	float coef[Ntap] = {
 		<coef_b>
 	};
 

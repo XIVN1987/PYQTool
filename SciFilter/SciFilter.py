@@ -1,6 +1,7 @@
 #! python3
 import os
 import sys
+import math
 import numpy as np
 import scipy as sp
 from scipy import signal
@@ -208,30 +209,39 @@ class SciFilter(QWidget):
         text = open(f'template/{arch}_{dtype}.c', 'r').read()
 
         if arch == 'fir':
-            b, a = coef, np.ndarray(0)
+            b, a = coef, np.ndarray(0)  # dummy a, 方便后续统一处理
 
         else:
             b, a = coef
 
         if dtype == 'int16':
-            a = (a * 2**15).astype(int)
-            b = (b * 2**15).astype(int)
+            if arch == 'fir':
+                gain = self.max_gain(b, 32767)
 
-            stra = self.data2str(a, '{:6d}, ')
-            strb = self.data2str(b, '{:6d}, ')
+                b = (b * gain).astype(int)
+
+            else:
+                gain_a = self.max_gain(a, 32767)
+                gain_b = self.max_gain(b, 32767)
+
+                a = (a * gain_a).astype(int)
+                b = (b * gain_b).astype(int)
+
+                gain = gain_b // gain_a
+
+            text = text.replace('<n_gain>', f'{gain}')
+
+            stra = self.data2str(a, '{:6d}, ', 8, 8)
+            strb = self.data2str(b, '{:6d}, ', 8, 8)
 
         else:
-            stra = self.data2str(a, '{:.16f}, ')
-            strb = self.data2str(b, '{:.16f}, ')
+            stra = self.data2str(a, '{:.16e}, ', 25, 4)
+            strb = self.data2str(b, '{:.16e}, ', 25, 4)
 
-        if arch == 'fir':
-            text = text.replace('<n_tap>', f'{self.linNtap.text()}')
-            text = text.replace('<coef_b>', strb)
-
-        else:
-            text = text.replace('<n_coef>', f'{self.linOrder.text()}')
-            text = text.replace('<coef_a>', stra)
-            text = text.replace('<coef_b>', strb)
+        text = text.replace('<n_tap>', self.linNtap.text())
+        text = text.replace('<n_coef>', self.linOrder.text())
+        text = text.replace('<coef_a>', stra)
+        text = text.replace('<coef_b>', strb)
 
         path, filter = QFileDialog.getSaveFileName(self, '将生成的代码保存至', f'{self.savedir}/{arch}.c', 'C file (*.c)')
         if path:
@@ -239,15 +249,20 @@ class SciFilter(QWidget):
 
             self.savedir = os.path.dirname(path)
 
-    def data2str(self, data, fmt):
+    def data2str(self, data, fmt, width, count):
         str = ''
 
         for i, x in enumerate(data):
-            str += fmt.format(x)
-            if i and i % 8 == 7:
+            str += fmt.format(x).rjust(width)
+            if i and i % count == count - 1:
                 str += '\n\t\t'
 
         return str
+
+    def max_gain(self, data, limit):
+        maxv = np.max(np.abs(data))
+
+        return 2**math.floor(math.log2(limit / maxv))
 
 
 if __name__ == "__main__":

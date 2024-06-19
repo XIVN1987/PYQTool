@@ -2,6 +2,8 @@
 
 #define Ncoef  <n_coef>
 
+#define Ngain  <n_gain>
+
 int16_t iir(int16_t NewSample)
 {
 	int16_t coefA[Ncoef+1] = {
@@ -23,9 +25,11 @@ int16_t iir(int16_t NewSample)
 
 	//Calculate the new output
 	x[0] = NewSample;
-	y[0] = coefB[0] * x[0];
+	y[0] = coefB[0] * x[0] / Ngain;
 	for(int i = 1; i <= Ncoef; i++)
-		y[0] += coefB[i] * x[i] - coefA[i] * y[i];
+		y[0] += coefB[i] * x[i] / Ngain - coefA[i] * y[i];
+
+	y[0] /= coefA[0];
 	
-	return y[0] >> 15;
+	return y[0];
 }
