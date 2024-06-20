@@ -379,7 +379,7 @@
         <number>20</number>
        </property>
        <property name="bottomMargin">
-        <number>20</number>
+        <number>90</number>
        </property>
        <item>
         <widget class="QPushButton" name="btnCalc">
