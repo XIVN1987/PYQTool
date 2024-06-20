@@ -79,12 +79,12 @@ class SciFilter(QWidget):
         if self.bgrpType.checkedButton() in (self.chkLP, self.chkHP):
             self.lblFhlim.setEnabled(False)
             self.linFhlim.setEnabled(False)
-            self.lblFstop.setText('截止频率：')
+            self.lblFstop.setText('截止频率（Hz）：')
 
         else:
             self.lblFhlim.setEnabled(True)
             self.linFhlim.setEnabled(True)
-            self.lblFstop.setText('下限频率：')
+            self.lblFstop.setText('下限频率（Hz）：')
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpWin_buttonToggled(self, button, checked):
@@ -109,14 +109,14 @@ class SciFilter(QWidget):
     @pyqtSlot()
     def on_btnCalc_clicked(self):
         try:
-            fSamp = float(self.linFsamp.text()[:-2])
-            fStop = float(self.linFstop.text()[:-2])
-            fHlim = float(self.linFhlim.text()[:-2])
+            fSamp = float(self.linFsamp.text())
+            fStop = float(self.linFstop.text())
+            fHlim = float(self.linFhlim.text())
             nTaps = int(self.linNtap.text())
             nOrder= int(self.linOrder.text())
 
-            Aripple = float(self.linApass.text()[:-2])
-            Aattenuation = float(self.linAstop.text()[:-2])
+            Aripple = float(self.linApass.text())
+            Aattenuation = float(self.linAstop.text())
 
         except Exception as e:
             QMessageBox.critical(self, 'filter parameter error', str(e))
