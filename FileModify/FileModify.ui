@@ -350,6 +350,99 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabLine">
+      <attribute name="title">
+       <string>变换文件换行符</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="hLayoutL">
+       <item>
+        <widget class="QLabel" name="lblSrcL">
+         <property name="text">
+          <string>将文件内容换行</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cmbSrcL">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>133</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>\r\n</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>\n</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblDstL">
+         <property name="text">
+          <string>转换为</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cmbDstL">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>133</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>\n</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>\r\n</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="hSpacerL">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnExecL">
+         <property name="text">
+          <string>执行</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>

@@ -124,6 +124,37 @@ class FileModify(QWidget):
 
                     self.txtInfo.append(f'{fullpath} encoding changed\n')
 
+    @pyqtSlot()
+    def on_btnExecL_clicked(self):
+        path = self.linPath.text()
+        srcL = self.cmbSrcL.currentText()
+        dstL = self.cmbDstL.currentText()
+        filter = self.cmbType.currentText()
+        
+        self.txtInfo.clear()
+        self.LineLFConvert(path, srcL, dstL, filter)
+        self.txtInfo.append('Done...')
+
+    #将指定路径path及其子目录下的文件中的换行符由srcL转换成dstL
+    def LineLFConvert(self, path, srcL, dstL, filter):
+        srcLF = srcL.replace(r'\r', '\r').replace(r'\n', '\n').encode()
+        dstLF = dstL.replace(r'\r', '\r').replace(r'\n', '\n').encode()
+        for root, dirs, files in os.walk(path):
+            for name in files:
+                _, ext = os.path.splitext(name)
+                if filter != '*.*' and filter.find(ext) < 1: continue
+                
+                fullpath = os.path.join(root, name)
+
+                bstr = open(fullpath, 'rb').read()
+                newbstr = bstr.replace(srcLF, dstLF)
+
+                if newbstr != bstr:
+                    os.chmod(fullpath, stat.S_IWRITE)
+                    open(fullpath, 'wb').write(newbstr)
+
+                    self.txtInfo.append(f'{fullpath} linefeed changed\n')
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
