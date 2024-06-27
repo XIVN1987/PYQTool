@@ -1,5 +1,5 @@
 # PYQTool
-Some usefull tool written in Python and PyQt.
+Some useful tool written in Python and PyQt.
 
 ## QmlSer
 serial assistant written in python and qml.
