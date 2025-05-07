@@ -53,8 +53,8 @@ class FileModify(QWidget):
     @pyqtSlot()
     def on_btnExecT_clicked(self):
         path = self.linPath.text()
-        srcT = self.linSrcT.text()
-        dstT = self.linDstT.text()
+        srcT = self.txtSrcT.toPlainText()
+        dstT = self.txtDstT.toPlainText()
         filter = self.cmbType.currentText()
         caseSensitive = self.chkCaseN.isChecked()
         
@@ -82,7 +82,7 @@ class FileModify(QWidget):
                         continue
 
                 if caseSensitive:
-                    newtext = re.sub(srcT, dstT, text)
+                    newtext = text.replace(srcT, dstT)
                 else:
                     newtext = re.sub(srcT, dstT, text, flags=re.I)
 
