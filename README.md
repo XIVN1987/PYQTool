@@ -25,4 +25,4 @@ filter designer based on scipy.
 
 ## WebSER
 
-![](./WebSER/截屏.jpg)
+![](./WebSER/截屏.png)
