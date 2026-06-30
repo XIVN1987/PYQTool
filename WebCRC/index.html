@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+
+    <title>WebCRC!</title>
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/1.4.2/theme-default/index.css">
+    <style>
+        .container {
+            width: 70%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .el-select .el-input {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <el-row justify="center">
+            <el-col :span="24"><h1>CRC 在线计算器</h1></el-col>
+        </el-row>
+        <el-form :model="form" label-width="80px">
+            <el-form-item label="多项式：">
+                <el-input v-model="form.linPoly" placeholder="0x1" v-bind:readonly="prePoly">
+                    <el-select v-model="form.cmbPoly" slot="prepend" v-on:change="cmbPoly_ItemChanged">>
+                        <el-option label="自定义" value="UserDefn"></el-option>
+                    %for crc in predefCrc:
+                        <el-option label="{{crc}}" value="{{crc}}"></el-option>
+                    %end
+                    </el-select>
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-col :span="12">
+                    <el-input v-model="form.linInit" placeholder="0x0" v-bind:readonly="prePoly">
+                        <template slot="prepend">初始值：</template>
+                    </el-input>
+                </el-col>
+                <el-col :span="4" :offset="4">
+                    <el-checkbox v-model="form.chkIrev" v-bind:disabled="prePoly">输入位反转</el-checkbox>
+                </el-col>
+                <el-col :span="4">
+                    <el-checkbox v-model="form.chkOxor" v-bind:disabled="prePoly">输出取异或</el-checkbox>
+                </el-col>
+            </el-form-item>
+            <el-form-item label="数据区：">
+                <el-input type="textarea" :rows="9" v-model="form.txtArea">
+            </el-form-item>
+            <el-form-item>
+                <el-col :span="12">
+                    <el-input v-model="form.linResu" :readonly="true">
+                        <template slot="prepend">结果值：</template>
+                    </el-input>
+                </el-col>
+                <el-col :span="4" :offset="8">
+                    <el-button v-on:click="btnCalc_Clicked">执行计算</el-button>
+                </el-col>
+            </el-form-item>
+        </el-form>
+    </div>
+</body>
+<script src="static/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/1.4.2/index.js"></script>
+<script>
+    <%
+        import json
+    %>
+    var predefCrc = {{!json.dumps(dict(predefCrc))}}
+
+    Vue.config.delimiters = ['${', '}']
+
+    vm = new Vue({
+        el: '#app',
+        data: function() {
+            return { 
+                form: {
+                    cmbPoly: "UserDefn",
+                    linPoly: "0x1",
+                    linInit: "0x0",
+                    chkIrev: false,
+                    chkOxor: false,
+                    txtArea: "",
+                    linResu: ""
+                },
+                prePoly: false
+            }
+        },
+        methods: {
+            cmbPoly_ItemChanged: function() {
+                if(this.form.cmbPoly != "UserDefn")
+                {
+                    this.prePoly = true
+
+                    this.form.linPoly = predefCrc[this.form.cmbPoly]["poly"]
+                    this.form.linInit = predefCrc[this.form.cmbPoly]["init"]
+                    this.form.chkIrev = predefCrc[this.form.cmbPoly]["irev"]
+                    this.form.chkOxor = predefCrc[this.form.cmbPoly]["oxor"]
+                }
+                else
+                {
+                    this.prePoly = false
+
+                    this.form.linPoly = "0x1"
+                    this.form.linInit = "0x0"
+                    this.form.chkIrev = false
+                    this.form.chkOxor = false
+                }
+            },
+            btnCalc_Clicked: function() {
+                if(this.form.cmbPoly != "UserDefn")
+                {
+                    data = {"type": "predef",
+                            "poly": this.form.cmbPoly,
+                            "data": this.form.txtArea
+                    }
+                }
+                else
+                {
+                    data = {"type": "usrdef",
+                            "poly": this.form.linPoly,
+                            "init": this.form.linInit,
+                            "irev": this.form.chkIrev,
+                            "oxor": this.form.chkOxor,
+                            "data": this.form.txtArea
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ajax",
+                    data: data,
+                    success: function(response) {
+                        vm.form.linResu = response
+                    }
+                });
+            }
+        }
+    })
+</script>
+</html>
