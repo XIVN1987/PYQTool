@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+
+    <title>串口助手</title>
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/1.4.2/theme-default/index.css">
+    <style>
+        .container {
+            width: 70%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .el-select .el-input {
+            width: 240px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <el-row justify="center">
+            <el-col :span="24"><h1>串口助手Web版</h1></el-col>
+        </el-row>
+        <el-form :inline="true" :model="ser">
+            <el-form-item label="串口号：">
+                <el-select v-model="ser.port" placeholder="串口号">
+                %for ser in sers:
+                    <el-option label="{{ser[0]}}" value="{{ser[1]}}"></el-option>
+                %end
+                </el-select>
+            </el-form-item>
+            <el-form-item label="波特率：">
+                <el-select v-model="ser.baud" placeholder="波特率">
+                    <el-option label="9600"  value="9600"></el-option>
+                    <el-option label="57600" value="57600"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="on_btnOpen_clicked">[[lblOpen]]</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="on_btnClear_clicked">清除显示</el-button>
+            </el-form-item>
+        </el-form>
+        <el-row>
+            <el-input type="textarea" :rows="9" v-model="txtArea"/>
+        </el-row>
+        <el-row style="margin-top: 15px;">
+            <el-input  v-model="txtLine">
+                <el-button slot="append" @click="on_btnSend_clicked">发送</el-button>
+            </el-input>
+        </el-row>
+    </div>
+</body>
+<script src="static/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/1.4.2/index.js"></script>
+<script>
+    Vue.config.delimiters = ['[[', ']]']
+
+    ws = new WebSocket("{{ws_url}}");
+    ws.onmessage = function(evt) {
+        console.log(evt.data);
+        obj = JSON.parse(evt.data)
+        if("cmd" in obj)
+        {
+            if(obj['cmd'] == 'serial opened')
+            {
+                vm.lblOpen = '关闭串口'
+            }
+            else if(obj['cmd'] == 'serial closed')
+            {
+                vm.lblOpen = '打开串口'
+            }
+        }
+        else
+        {
+            vm.txtArea += obj['data']
+        }
+    };
+
+    vm = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: function() {
+            return { 
+                ser: {
+                    port: "",
+                    baud: ""
+                },
+                txtArea: "",
+                txtLine: "",
+                lblOpen: "打开串口"
+            }
+        },
+        methods: {
+            on_btnOpen_clicked() {
+                if(this.lblOpen == "打开串口")
+                {
+                    ws.send(JSON.stringify({"cmd": "open serial", "port": this.ser.port, "baud": this.ser.baud}))
+                }
+                else
+                {
+                    ws.send(JSON.stringify({"cmd": "close serial"}))
+                }
+            },
+            on_btnClear_clicked() {
+                console.log('btnClear clicked!');
+
+                this.txtArea = ''
+            },
+            on_btnSend_clicked() {
+                console.log('btnSend clicked!');
+
+                ws.send(JSON.stringify({"data": this.txtLine}))
+            }
+        }
+    })
+</script>
+</html>
